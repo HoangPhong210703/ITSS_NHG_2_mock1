@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Household Goods Discount App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Save on Household Goods</h1>
+        </header>
+
+        <section id="discount-programs">
+            <h2>Discount Programs & Vouchers</h2>
+            <ul id="voucher-list">
+                </ul>
+        </section>
+
+        <section id="discount-stores">
+            <h2>Discount Stores</h2>
+            <ul id="store-list">
+                </ul>
+        </section>
+
+        <section id="discount-products">
+            <h2>Products with Discount Offers</h2>
+            <ul id="product-list">
+                </ul>
+        </section>
+
+        <section id="store-info">
+            <h2>Store Information</h2>
+            <div id="store-details">
+                </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const voucherList = document.getElementById('voucher-list');
+            const storeList = document.getElementById('store-list');
+            const productList = document.getElementById('product-list');
+            const storeDetails = document.getElementById('store-details');
+
+            // Sample Data (Replace with actual data)
+            const vouchers = [
+                { id: 1, title: "10% off on first purchase", code: "NEW10" },
+                { id: 2, title: "Free shipping on orders over $50", code: "FREESHIP50" },
+                { id: 3, title: "$5 off on cleaning supplies", code: "CLEAN5" },
+            ];
+
+            const stores = [
+                { id: 101, name: "SuperMart", location: "Downtown Plaza" },
+                { id: 102, name: "Discount Warehouse", location: "Industrial Area" },
+                { id: 103, name: "EcoHome Goods", location: "Uptown Mall" },
+            ];
+
+            const products = [
+                { id: 201, name: "Laundry Detergent", price: 12.99, discount: 0.20, storeId: 101 }, // 20% off
+                { id: 202, name: "Kitchen Cleaner", price: 8.50, discount: 0.15, storeId: 101 }, // 15% off
+                { id: 203, name: "Bath Towels Set", price: 25.00, discount: 0.25, storeId: 102 }, // 25% off
+                { id: 204, name: "Trash Bags", price: 6.75, discount: 0.10, storeId: 103 }, // 10% off
+            ];
+
+            // 1. Function to display discount programs, vouchers
+            function displayVouchers() {
+                voucherList.innerHTML = ''; // Clear previous content
+                if (vouchers.length === 0) {
+                    voucherList.innerHTML = '<p>No vouchers available.</p>';
+                    return;
+                }
+                vouchers.forEach(voucher => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <h3>${voucher.title}</h3>
+                        <p>Code: ${voucher.code}</p>
+                    `;
+                    voucherList.appendChild(listItem);
+                });
+            }
+
+            // 2. Function to display discount stores
+            function displayStores() {
+                storeList.innerHTML = ''; // Clear previous content
+                if (stores.length === 0) {
+                    storeList.innerHTML = '<p>No stores available.</p>';
+                    return;
+                }
+                stores.forEach(store => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<a href="#" data-store-id="${store.id}">${store.name}</a> - ${store.location}`;
+                    storeList.appendChild(listItem);
+                });
+
+                // Add event listeners to store names to show details on click
+                const storeLinks = storeList.querySelectorAll('a');
+                storeLinks.forEach(link => {
+                    link.addEventListener('click', (event) => {
+                        const storeId = parseInt(event.target.dataset.storeId);
+                        displayStoreInfo(storeId);
+                    });
+                });
+            }
+
+            // 3. Function to display products with discount offers
+            function displayProducts() {
+                productList.innerHTML = ''; // Clear previous content
+                if (products.length === 0) {
+                    productList.innerHTML = '<p>No discounted products available.</p>';
+                    return;
+                }
+                products.forEach(product => {
+                    const discountedPrice = product.price * (1 - product.discount);
+                    const store = stores.find(s => s.id === product.storeId); // Find store name
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>Price: $${product.price.toFixed(2)}</p>
+                        <p>Discount: ${product.discount * 100}%</p>
+                        <p>Discounted Price: $${discountedPrice.toFixed(2)}</p>
+                        <p>Store: ${store ? store.name : 'N/A'}</p> 
+                    `;
+                    productList.appendChild(listItem);
+                });
+            }
+
+            // 4. Function to display information (location, website, etc.) about discount stores
+            function displayStoreInfo(storeId) {
+                const store = stores.find(s => s.id === storeId);
+                storeDetails.innerHTML = ''; // Clear previous content
+                if (!store) {
+                    storeDetails.innerHTML = '<p>Store information not found.</p>';
+                    return;
+                }
+                // In a real application, you would fetch more detailed information.
+                const website = "https://www.example.com"; // Placeholder
+                storeDetails.innerHTML = `
+                    <h3>${store.name}</h3>
+                    <p>Location: ${store.location}</p>
+                    <p>Website: <a href="${website}" target="_blank">${website}</a></p>
+                `;
+            }
+
+            // Initial display of data
+            displayVouchers();
+            displayStores();
+            displayProducts();
+            // Optionally display a default store's information.
+            if (stores.length > 0) {
+                displayStoreInfo(stores[0].id); // Show the first store's info by default.
+            }
+        });
+    </script>
+</body>
+</html>
